@@ -27,12 +27,16 @@
                 @tag.Name
                 @if (Post.Tags.Any(t => t.Id == tag.Id))
                 {
+                    <button type="button" @onclick="@(() => { Post.Tags.Remove(Post.Tags.Single(t => t.Id == tag.Id)); })">Usuń</button>
+                }
+                 else
+                {
                     <button type="button" @onclick="@(() => { Post.Tags.Add(tag); })">Dodaj</button>
                 }
             </li>
         }
     </ul>
-    <InputTextAreaOnInput @bind-Value="Post.Text" @onkeyup="UpdateHTML"/>
+    <InputTextAreaOnInput @bind-Value="Post.Text" @onkeyup="UpdateHTML" />
     <ValidationMessage For="()=>Post.Text" />
     <button type="submit" class="btn btn-success">Zapisz</button>
 </EditForm>
