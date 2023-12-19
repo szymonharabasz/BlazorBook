@@ -1,0 +1,38 @@
+﻿@inject IJSRuntime JSRuntime
+@implements IDisposable
+
+<NavigationLock ConfirmExternalNavigation="@(CurrentEditContect.IsModified()/* && CheckNavigation*/)"
+                OnBeforeInternalNavigation="OnBeforeInternalNavigation"/>
+
+@code {
+    [CascadingParameter]
+    public required EditContext CurrentEditContect { get; set; }
+    public string InternalNavigationMessage { get; set; } =
+        "Zmiany zostaną utracone. Czy na pewno chcesz opuścić stronę?";
+
+    protected override Task OnInitializedAsync()
+    {
+        CurrentEditContect.OnFieldChanged += OnFieldChangedAsync;
+        return base.OnInitializedAsync();
+    }
+
+    private async void OnFieldChangedAsync(object? sender, FieldChangedEventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    void IDisposable.Dispose()
+    {
+        CurrentEditContect.OnFieldChanged -= OnFieldChangedAsync;
+    }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", InternalNavigationMessage);
+        if (!isConfirmed)
+        {
+            context.PreventNavigation();
+        }
+    }
+}
+
