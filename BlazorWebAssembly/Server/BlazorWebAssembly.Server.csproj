@@ -13,9 +13,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\Data.csproj" />
     <ProjectReference Include="..\Client\BlazorWebAssembly.Client.csproj" />
     <ProjectReference Include="..\Shared\BlazorWebAssembly.Shared.csproj" />
   </ItemGroup>
 
 
+  <ItemGroup>
+    <None Remove="Endpoints\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Endpoints\" />
+  </ItemGroup>
 </Project>
