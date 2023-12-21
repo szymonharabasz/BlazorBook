@@ -1,0 +1,9 @@
+@implements ILoginStatus
+<AuthorizeView>
+    <Authorized>
+        <a href="authentication/logout">Wyloguj</a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="authentication/login?redirectUri=https://localhost:7009/">Zaloguj</a>
+    </NotAuthorized>
+</AuthorizeView>

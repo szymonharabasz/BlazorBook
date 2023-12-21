@@ -1,6 +1,8 @@
 using Data;
 using Data.Models.Interfaces;
 using BlazorWebAssembly.Server.Endpoints;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,17 @@ builder.Services.AddOptions<BlogApiJsonDirectAccessSetting>().Configure(options 
     options.TagsFolder = "Tags";
 });
 builder.Services.AddScoped<IBlogApi, BlogApiJsonDirectAccess>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, c =>
+    {
+        c.Authority = builder.Configuration["Auth0:Authority"];
+        c.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudience = builder.Configuration["Auth0:Audience"],
+            ValidIssuer = builder.Configuration["Auth0:Authority"]
+        };
+    });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -37,6 +50,8 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseRouting();
 
 app.MapBlogPostApi();

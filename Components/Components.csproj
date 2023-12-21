@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.14" />
     <PackageReference Include="Markdig" Version="0.34.0" />
   </ItemGroup>
@@ -28,7 +29,6 @@
   <ItemGroup>
     <Folder Include="Pages\" />
     <Folder Include="Shared\" />
-    <Folder Include="RazorComponents\" />
     <Folder Include="Pages\Admin\" />
   </ItemGroup>
 </Project>

@@ -22,4 +22,7 @@
   <ItemGroup>
     <Folder Include="Pages\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.0" />
+  </ItemGroup>
 </Project>

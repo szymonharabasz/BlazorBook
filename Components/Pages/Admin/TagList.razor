@@ -1,6 +1,8 @@
 ﻿@page "/admin/tags"
 @using Components.RazorComponents
 @inject IBlogApi _api
+@attribute [Authorize]
+
 <h3>Tagi</h3>
 
 <EditForm OnValidSubmit="Save" Model="Item">
