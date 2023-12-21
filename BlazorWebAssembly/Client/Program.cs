@@ -21,7 +21,7 @@ builder.Services.AddOidcAuthentication(options =>
     options.ProviderOptions.ResponseType = "code";
     options.ProviderOptions.AdditionalProviderParameters.Add("audience",
         builder.Configuration["Auth0:Audience"]);
-});
+}).AddAccountClaimsPrincipalFactory<ArrayClaimsPrincipalFactory<RemoteUserAccount>>();
 builder.Services.AddTransient<ILoginStatus, LoginStatusWasm>();
 
 await builder.Build().RunAsync();

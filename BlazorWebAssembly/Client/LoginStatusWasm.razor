@@ -12,9 +12,10 @@
 
 @code {
 
-    private async Task BeginSignOut(MouseEventArgs args)
+    private Task BeginSignOut(MouseEventArgs args)
     {
         Navigation.NavigateToLogout("authentication/logout");
+        return Task.CompletedTask;
     }
 
 }
