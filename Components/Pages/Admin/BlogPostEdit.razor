@@ -2,8 +2,11 @@
 @page "/admin/blogposts/{Id}"
 @inject IBlogApi _api
 @inject NavigationManager _manager
+@inject IBrowserStorage _storage
+@inject IBlogNotificationService notificationService
 @using Components.RazorComponents
 @using Markdig
+@using Components.Interfaces
 @attribute [Authorize]
 
 <EditForm Model="Post" OnValidSubmit="SavePost">
@@ -37,7 +40,7 @@
             </li>
         }
     </ul>
-    <InputTextAreaOnInput @bind-Value="Post.Text" @onkeyup="UpdateHTML" />
+    <InputTextAreaOnInput @bind-Value="Post.Text" @onkeyup="UpdateHTMLAsync" />
     <ValidationMessage For="()=>Post.Text" />
     <button type="submit" class="btn btn-success">Zapisz</button>
 </EditForm>
@@ -77,10 +80,17 @@
             .Build();
         return base.OnInitializedAsync();
     }
-    protected void UpdateHTML()
+    protected async void UpdateHTMLAsync()
     {
-        markDownAsHTML = Markdig.Markdown.ToHtml(Post.Text, pipeline);
-
+        if (Post.Text != null)
+        {
+            markDownAsHTML = Markdig.Markdown.ToHtml(Post.Text, pipeline);
+            if (string.IsNullOrEmpty(Post.Id))
+            {
+                await _storage.SetAsync("EditCurrentPost", Post);
+            }
+        }
+        await notificationService.SendNotification(Post);
     }
     bool hasTag(Tag tag)
     {
@@ -98,12 +108,26 @@
                 {
                     selectedCategory = Post.Categoty.Id;
                 }
-                UpdateHTML();
+                UpdateHTMLAsync();
             }
         }
         Categories = (await _api.GetCategoriesAsync()) ?? new();
         Tags = (await _api.GetTagsAsync()) ?? new();
         base.OnParametersSet();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && string.IsNullOrEmpty(Id))
+        {
+            var saved = await _storage.GetAsync<BlogPost>("EditCurrentPost");
+            if (saved != null)
+            {
+                Post = saved;
+                StateHasChanged();
+            }
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
 }
 

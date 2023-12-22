@@ -1,6 +1,9 @@
+using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using BlazorWebAssembly.Client;
+using BlazorWebAssembly.Client.Services;
+using Components.Interfaces;
 using Components.RazorComponents;
 using Data.Models.Interfaces;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -23,5 +26,9 @@ builder.Services.AddOidcAuthentication(options =>
         builder.Configuration["Auth0:Audience"]);
 }).AddAccountClaimsPrincipalFactory<ArrayClaimsPrincipalFactory<RemoteUserAccount>>();
 builder.Services.AddTransient<ILoginStatus, LoginStatusWasm>();
+
+builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddScoped<IBrowserStorage, BlogBrowserStorage>();
+builder.Services.AddSingleton<IBlogNotificationService, BlazorWebAssemblyBlogNotificationService>();
 
 await builder.Build().RunAsync();

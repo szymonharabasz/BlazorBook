@@ -1,6 +1,7 @@
 using Data;
 using Data.Models.Interfaces;
 using BlazorWebAssembly.Server.Endpoints;
+using BlazorWebAssembly.Server.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,6 +31,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddAuthorization();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -60,6 +62,7 @@ app.MapTagApi();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<BlogNotificationHub>("/BlogNotificationHub");
 app.MapFallbackToFile("index.html");
 
 app.Run();
